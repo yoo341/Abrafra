@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Abrafra – UCC Campus Marketplace</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f8f5;--card:#fff;--tx:#17231b;--mu:#5d6b62;--pr:#0f7a4a;--ac:#f4b400;--bd:#dfe6e0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101712;--card:#18211b;--tx:#eaf2ec;--mu:#9bab9f;--pr:#33b877;--bd:#28352c}}
+:root[data-theme="dark"]{--bg:#101712;--card:#18211b;--tx:#eaf2ec;--mu:#9bab9f;--pr:#33b877;--bd:#28352c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--pr);color:#fff;padding:18px 16px;text-align:center}
+header h1{margin:0;font-size:1.6rem;letter-spacing:.5px}
+header p{margin:4px 0 0;opacity:.9;font-size:.9rem}
+nav{display:flex;gap:6px;padding:10px;max-width:760px;margin:auto}
+nav button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-weight:600;cursor:pointer}
+nav button.on{background:var(--ac);color:#111;border-color:var(--ac)}
+main{max-width:760px;margin:auto;padding:0 12px 40px}
+section{display:none}section.on{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
+.card .em{font-size:2rem}.card h3{margin:6px 0 2px;font-size:1rem}.card small{color:var(--mu)}
+.price{font-weight:700;color:var(--pr);margin:6px 0}
+button.b{background:var(--pr);color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:600;cursor:pointer;width:100%}
+form{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;display:grid;gap:10px}
+label{font-size:.85rem;color:var(--mu);display:grid;gap:4px}
+input,select,textarea{padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;width:100%}
+h2{margin:8px 0}
+.note{font-size:.8rem;color:var(--mu)}
+#out,.out{display:none;background:var(--card);border:2px solid var(--pr);border-radius:12px;padding:14px;margin-top:12px}
+#out a,.out a{display:block;margin:8px 0;padding:11px;background:#25d366;color:#053;border-radius:8px;text-align:center;text-decoration:none;font-weight:700}
+</style></head><body>
+<header><h1>🛍️ Abrafra</h1><p>UCC campus marketplace · Order · Sell · Deliver</p></header>
+<nav>
+<button class="on" data-t="shop">Shop</button>
+<button data-t="sell">Sell</button>
+<button data-t="ride">Ride</button>
+</nav>
+<main>
+<section id="shop" class="on">
+<h2>Popular on campus</h2>
+<div class="grid" id="grid"></div>
+<form id="orderForm" style="margin-top:14px">
+<h2 style="margin:0">Place your order</h2>
+<label>Item<select id="o_item"></select></label>
+<label>Quantity<input id="o_qty" type="number" min="1" value="1" required></label>
+<label>Your name<input id="o_name" required></label>
+<label>Your WhatsApp number<input id="o_phone" type="tel" placeholder="024xxxxxxx" required></label>
+<label>Delivery location (hall / hostel / room)<input id="o_loc" required></label>
+<label>Assign rider<select id="o_rider"></select></label>
+<label>Notes<textarea id="o_note" rows="2"></textarea></label>
+<button class="b" type="submit">Submit order</button>
+<div class="note">You'll get WhatsApp buttons to send the order to Abrafra and the rider.</div>
+</form>
+<div id="out"></div>
+</section>
+
+<section id="sell">
+<h2>Become a seller</h2>
+<form id="sellForm">
+<label>Full name<input name="Name" required></label>
+<label>Shop / brand name<input name="Shop" required></label>
+<label>WhatsApp number<input name="Phone" type="tel" required></label>
+<label>What you sell<input name="Products" placeholder="e.g. jollof, phone accessories, stationery" required></label>
+<label>Location on campus<input name="Location" required></label>
+<button class="b" type="submit">Register as seller</button>
+</form>
+</section>
+
+<section id="ride">
+<h2>Join as a delivery rider</h2>
+<form id="rideForm">
+<label>Full name<input name="Name" required></label>
+<label>WhatsApp number (orders will be sent here)<input name="Phone" type="tel" required></label>
+<label>Hall / hostel<input name="Hostel" required></label>
+<label>Transport<select name="Transport"><option>Walking</option><option>Bicycle</option><option>Motorbike</option><option>Tricycle</option></select></label>
+<label>Student ID number<input name="StudentID" required></label>
+<button class="b" type="submit">Register as rider</button>
+</form>
+</section>
+</main>
+
+<script>
+// ===== CONFIG: edit these =====
+const CEOS = [ // the three CEOs, WhatsApp format 233XXXXXXXXX (no + or 0)
+  {name:"CEO 1", wa:"233547636957"},
+  {name:"CEO 2", wa:"233555664263"},
+  {name:"CEO 3", wa:"233545372165"}
+];
+const RIDERS = [ // approved riders; add each as {name, wa}
+  {name:"Rider 1", wa:"233000000001"},
+  {name:"Rider 2", wa:"233592055231"}
+];
+const PRODUCTS = [
+  {e:"🍛",n:"Jollof & Chicken",p:25,s:"Campus Kitchen"},
+  {e:"🥤",n:"Bottled Water (pack)",p:15,s:"Cape Mart"},
+  {e:"📓",n:"Notebook Set",p:20,s:"Stationery Hub"},
+  {e:"🔌",n:"Phone Charger",p:40,s:"Tech Corner"},
+  {e:"👕",n:"UCC Hoodie",p:120,s:"Campus Wear"},
+  {e:"🍞",n:"Bread & Egg",p:10,s:"Morning Bites"}
+];
+// ==============================
+const $=id=>document.getElementById(id);
+const wa=(n,t)=>"https://wa.me/"+n+"?text="+encodeURIComponent(t);
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button,section").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");$(b.dataset.t).classList.add("on");
+});
+$("grid").innerHTML=PRODUCTS.map((x,i)=>`<div class="card"><div class="em">${x.e}</div><h3>${x.n}</h3><small>${x.s}</small><div class="price">GH₵ ${x.p}</div><button class="b" onclick="pick(${i})">Order</button></div>`).join("");
+$("o_item").innerHTML=PRODUCTS.map((x,i)=>`<option value="${i}">${x.n} – GH₵ ${x.p}</option>`).join("");
+$("o_rider").innerHTML=`<option value="-1">Any available rider (CEOs assign)</option>`+RIDERS.map((r,i)=>`<option value="${i}">${r.name}</option>`).join("");
+function pick(i){$("o_item").value=i;$("orderForm").scrollIntoView({behavior:"smooth"})}
+$("orderForm").onsubmit=e=>{
+  e.preventDefault();
+  const x=PRODUCTS[$("o_item").value],q=+$("o_qty").value,ri=+$("o_rider").value;
+  const id="RH"+Date.now().toString().slice(-6);
+  const msg=`🛍️ ABRAFRA NEW ORDER #${id}\nItem: ${x.n} x${q}\nSeller: ${x.s}\nTotal: GH₵ ${x.p*q}\nCustomer: ${$("o_name").value}\nPhone: ${$("o_phone").value}\nDeliver to: ${$("o_loc").value}\nNotes: ${$("o_note").value||"-"}`;
+  let h=`<b>Order #${id} ready.</b> Tap to send:`+ceoLinks(msg);
+  if(ri>=0)h+=`<a target="_blank" rel="noopener" href="${wa(RIDERS[ri].wa,msg)}">Send to ${RIDERS[ri].name}</a>`;
+  $("out").innerHTML=h;$("out").style.display="block";$("out").scrollIntoView({behavior:"smooth"});
+};
+function ceoLinks(m){return CEOS.map(c=>`<a target="_blank" rel="noopener" href="${wa(c.wa,m)}">Send to ${c.name}</a>`).join("")}
+function ceoBtns(m){return CEOS.map(c=>`<a target="_blank" rel="noopener" href="${wa(c.wa,m)}">Send to CEO ${c.name}</a>`).join("")}
+function reg(formId,title){
+  $(formId).onsubmit=e=>{
+    e.preventDefault();
+    const d=new FormData(e.target);let t=`📝 ABRAFRA ${title}\n`;
+    for(const [k,v] of d.entries())t+=`${k}: ${v}\n`;
+    let p=e.target.nextElementSibling;
+    if(!p||!p.classList.contains("out2")){p=document.createElement("div");p.id="out";p.className="out2";e.target.after(p)}
+    p.innerHTML="<b>Almost done.</b> Tap each button to send your details to the CEOs:"+ceoLinks(t);p.style.display="block";e.target.reset();
+  };
+}
+reg("sellForm","NEW SELLER SIGN-UP");
+reg("rideForm","NEW RIDER SIGN-UP");
+</script>
+</body></html>
